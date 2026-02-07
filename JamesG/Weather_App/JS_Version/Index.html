@@ -35,33 +35,105 @@
 			grid-column: 2 / 5;
 			grid-row: 2 / 3;
 			background-color: #ffcccb;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			gap: 10px;
 		}
 		.hourlyForecast {
 			grid-column: 2 / 5;
 			grid-row: 3 / 4;
 			background-color: #ffa07a;
+			display: grid;
+			grid-auto-flow: column;
+			grid-auto-columns: 60px;
+			overflow-x: auto;
+			gap: 5px;
+			padding: 5px;
+			box-sizing: border-box;
+		}
+		.hourly-item {
+			background-color: rgba(255, 255, 255, 0.3);
+			padding: 5px;
+			border-radius: 5px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			font-size: 12px;
+			gap: 3px;
+		}
+		.hourly-time {
+			font-weight: bold;
+			font-size: 11px;
+		}
+		.hourly-weather-icon {
+			font-size: 20px;
+		}
+		.hourly-temp {
+			font-size: 11px;
 		}
 		.dailyForecast {
 			grid-column: 2 / 5;
 			grid-row: 4 / -1;
 			background-color: #f0e68c;
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 5px;
+			padding: 5px;
+			box-sizing: border-box;
+			overflow-y: auto;
+		}
+		.daily-item {
+			background-color: rgba(255, 255, 255, 0.3);
+			padding: 8px;
+			border-radius: 2px;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+			gap: 5px;
+		}
+		.daily-date {
+			font-weight: bold;
+			font-size: 13px;
+		}
+		.daily-weather-icon {
+			font-size: 28px;
+		}
+		.daily-temp-range {
+			font-size: 12px;
 		}
 		.airAndWind {
 			grid-column: 5 / 6;
 			grid-row: 2 / 3;
 			background-color: #d3d3d3;
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 5px;
+			box-sizing: border-box;
 		}
-		/* .wind {
+		.airQuality {
+			grid-column: 1 / 2;
+			background-color: #e6e6fa;
+		}
+		.wind {
+			grid-column: 2 / 3;
+			background-color: #1717e2;
+		}
+
+		.precipitation {
 			grid-column: 5 / 6;
 			grid-row: 3 / 4;
-			background-color: #e6e6fa;
-		} */
-		.uvIntensity {
+			background-color: #921a0d;
+		}
+		.feelsLikeTemperature {
 			grid-column: 5 / 6;
 			grid-row: 4 / 5;
 			background-color: #ffe4e1;
 		}
-		.sunriseTime {
+		.humidity {
 			grid-column: 5 / 6;
 			grid-row: 5 / 6;
 			background-color: #fafad2;
@@ -73,9 +145,202 @@
 	<div class="container">
 		<div class="search bar">Search Bar</div>
 		<div class="citys">citys</div>
-		<div class="currentWeather">currentWeather</div>
-		<div class="hourlyForecast">hourlyForecast</div>
-		<div class="dailyForecast">dailyForecast</div>
+		<div class="currentWeather">
+			<div class="city-name">城市名称</div>
+			<div class="weather-icon">⛅</div>
+			<div class="current-temp">温度: 20°C</div>
+			<div class="temp-range">最高: 25°C 最低: 15°C</div>
+			<div class="feels-like">体感: 18°C</div>
+		</div>
+		<div class="hourlyForecast">
+			<div class="hourly-item">
+				<div class="hourly-time">现在</div>
+				<div class="hourly-weather-icon">☀️</div>
+				<div class="hourly-temp">20°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">13时</div>
+				<div class="hourly-weather-icon">⛅</div>
+				<div class="hourly-temp">21°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">14时</div>
+				<div class="hourly-weather-icon">☁️</div>
+				<div class="hourly-temp">22°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">15时</div>
+				<div class="hourly-weather-icon">☁️</div>
+				<div class="hourly-temp">21°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">16时</div>
+				<div class="hourly-weather-icon">⛅</div>
+				<div class="hourly-temp">20°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">17时</div>
+				<div class="hourly-weather-icon">☁️</div>
+				<div class="hourly-temp">19°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">18时</div>
+				<div class="hourly-weather-icon">🌧️</div>
+				<div class="hourly-temp">18°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">19时</div>
+				<div class="hourly-weather-icon">🌧️</div>
+				<div class="hourly-temp">17°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">20时</div>
+				<div class="hourly-weather-icon">☁️</div>
+				<div class="hourly-temp">16°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">21时</div>
+				<div class="hourly-weather-icon">⭐</div>
+				<div class="hourly-temp">15°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">22时</div>
+				<div class="hourly-weather-icon">⭐</div>
+				<div class="hourly-temp">14°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">23时</div>
+				<div class="hourly-weather-icon">⭐</div>
+				<div class="hourly-temp">13°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">00时</div>
+				<div class="hourly-weather-icon">⭐</div>
+				<div class="hourly-temp">12°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">01时</div>
+				<div class="hourly-weather-icon">⭐</div>
+				<div class="hourly-temp">11°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">02时</div>
+				<div class="hourly-weather-icon">⭐</div>
+				<div class="hourly-temp">10°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">03时</div>
+				<div class="hourly-weather-icon">⭐</div>
+				<div class="hourly-temp">10°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">04时</div>
+				<div class="hourly-weather-icon">⭐</div>
+				<div class="hourly-temp">9°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">05时</div>
+				<div class="hourly-weather-icon">⭐</div>
+				<div class="hourly-temp">8°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">06时</div>
+				<div class="hourly-weather-icon">⭐</div>
+				<div class="hourly-temp">7°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">07时</div>
+				<div class="hourly-weather-icon">🌅</div>
+				<div class="hourly-temp">8°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">08时</div>
+				<div class="hourly-weather-icon">☀️</div>
+				<div class="hourly-temp">10°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">09时</div>
+				<div class="hourly-weather-icon">☀️</div>
+				<div class="hourly-temp">12°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">10时</div>
+				<div class="hourly-weather-icon">☀️</div>
+				<div class="hourly-temp">15°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">11时</div>
+				<div class="hourly-weather-icon">☀️</div>
+				<div class="hourly-temp">18°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">12时</div>
+				<div class="hourly-weather-icon">☀️</div>
+				<div class="hourly-temp">20°C</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">日出</div>
+				<div class="hourly-weather-icon">🌅</div>
+				<div class="hourly-temp">07:30</div>
+			</div>
+			<div class="hourly-item">
+				<div class="hourly-time">日落</div>
+				<div class="hourly-weather-icon">🌇</div>
+				<div class="hourly-temp">17:45</div>
+			</div>
+		</div>
+		<div class="dailyForecast">
+			<div class="daily-item">
+				<div class="daily-date">今天</div>
+				<div class="daily-weather-icon">⛅</div>
+				<div class="daily-temp-range">15°C ~ 25°C</div>
+			</div>
+			<div class="daily-item">
+				<div class="daily-date">周一</div>
+				<div class="daily-weather-icon">☀️</div>
+				<div class="daily-temp-range">16°C ~ 26°C</div>
+			</div>
+			<div class="daily-item">
+				<div class="daily-date">周二</div>
+				<div class="daily-weather-icon">☁️</div>
+				<div class="daily-temp-range">14°C ~ 23°C</div>
+			</div>
+			<div class="daily-item">
+				<div class="daily-date">周三</div>
+				<div class="daily-weather-icon">🌧️</div>
+				<div class="daily-temp-range">12°C ~ 20°C</div>
+			</div>
+			<div class="daily-item">
+				<div class="daily-date">周四</div>
+				<div class="daily-weather-icon">🌧️</div>
+				<div class="daily-temp-range">11°C ~ 19°C</div>
+			</div>
+			<div class="daily-item">
+				<div class="daily-date">周五</div>
+				<div class="daily-weather-icon">☁️</div>
+				<div class="daily-temp-range">13°C ~ 22°C</div>
+			</div>
+			<div class="daily-item">
+				<div class="daily-date">周六</div>
+				<div class="daily-weather-icon">⛅</div>
+				<div class="daily-temp-range">14°C ~ 24°C</div>
+			</div>
+			<div class="daily-item">
+				<div class="daily-date">周日</div>
+				<div class="daily-weather-icon">☀️</div>
+				<div class="daily-temp-range">17°C ~ 27°C</div>
+			</div>
+			<div class="daily-item">
+				<div class="daily-date">下周一</div>
+				<div class="daily-weather-icon">☀️</div>
+				<div class="daily-temp-range">18°C ~ 28°C</div>
+			</div>
+			<div class="daily-item">
+				<div class="daily-date">下周二</div>
+				<div class="daily-weather-icon">⛅</div>
+				<div class="daily-temp-range">15°C ~ 25°C</div>
+			</div>
+		</div>
 		<div class="airAndWind">
 			<div class="airQuality">airQuality</div>
 			<div class="wind">wind</div>
