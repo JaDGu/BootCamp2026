@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Weather Grid 页面</title>
+		<style></style>
+	</head>
+	<style>
+		html,
+		body {
+			height: 100%;
+			margin: 0;
+		}
+
+		.container {
+			display: grid;
+			grid-template-columns: 150px repeat(4, 1fr);
+			grid-template-rows: 50px 150px 150px repeat(2, 1fr);
+			gap: 5px;
+			height: 100%;
+			padding: 5px;
+			box-sizing: border-box;
+		}
+		.search {
+			grid-column: 1 / 6;
+			grid-row: 1 / 2;
+			background-color: #add8e6;
+		}
+		.citys {
+			grid-column: 1 / 2;
+			grid-row: 2 / -1;
+			background-color: #90ee90;
+		}
+		.currentWeather {
+			grid-column: 2 / 5;
+			grid-row: 2 / 3;
+			background-color: #ffcccb;
+		}
+		.hourlyForecast {
+			grid-column: 2 / 5;
+			grid-row: 3 / 4;
+			background-color: #ffa07a;
+		}
+		.dailyForecast {
+			grid-column: 2 / 5;
+			grid-row: 4 / -1;
+			background-color: #f0e68c;
+		}
+		.airAndWind {
+			grid-column: 5 / 6;
+			grid-row: 2 / 3;
+			background-color: #d3d3d3;
+		}
+		/* .wind {
+			grid-column: 5 / 6;
+			grid-row: 3 / 4;
+			background-color: #e6e6fa;
+		} */
+		.uvIntensity {
+			grid-column: 5 / 6;
+			grid-row: 4 / 5;
+			background-color: #ffe4e1;
+		}
+		.sunriseTime {
+			grid-column: 5 / 6;
+			grid-row: 5 / 6;
+			background-color: #fafad2;
+		}
+	</style>
+</html>
+
+<body>
+	<div class="container">
+		<div class="search bar">Search Bar</div>
+		<div class="citys">citys</div>
+		<div class="currentWeather">currentWeather</div>
+		<div class="hourlyForecast">hourlyForecast</div>
+		<div class="dailyForecast">dailyForecast</div>
+		<div class="airAndWind">
+			<div class="airQuality">airQuality</div>
+			<div class="wind">wind</div>
+		</div>
+
+		<!-- <div class="sunriseTime">sunriseTime</div> -->
+		<div class="feelsLikeTemperature">feelsLikeTemperature</div>
+		<div class="precipitation">precipitation</div>
+		<div class="humidity">humidity</div>
+	</div>
+</body>
