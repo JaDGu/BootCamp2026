@@ -1,14 +1,5 @@
-import { Bot } from "node-telegram-bot-api";
-import { run } from "node-telegram-bot-api/node";
-import "dotenv/config";
-import { getAchievements, unlockAchievement } from "./database.js";
-import {
-  ACHIEVEMENTS,
-  findUnlockedAchievements,
-  getAchievementMessage,
-} from "./achievements.js";
-
-const bot = new Bot(process.env.BOT_TOKEN);
+import { ACHIEVEMENTS } from "./achievements.js";
+import { getAchievements } from "./database.js";
 
 function escapeHtml(value) {
   return String(value)
@@ -17,16 +8,45 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;");
 }
 
-class WordGame {
-  constructor(length = 5) {
-    this.URL = `https://random-word-api.herokuapp.com/word?length=${length}`;
+export class WordGame {
+  constructor() {
+    this.length = 5;
+    this.isWaitingForLength = false;
+    this.pendingLength = null;
+
+    this.difficulty = 1;
+    this.isWaitingForDifficulty = false;
+
     this.word = "";
     this.guessedLetters = new Set();
     this.guessedTimes = 0;
+
     this.userId = null;
     this.chatId = null;
     this.userName = null;
     this.first_name = null;
+  }
+
+  setLength(length) {
+    if (!Number.isInteger(length) || length < 3 || length > 10) {
+      throw new RangeError("Length must be an integer from 3 to 10.");
+    }
+    this.length = length;
+  }
+
+  setWaitingForLength(isWaiting) {
+    this.isWaitingForLength = isWaiting;
+  }
+
+  setDifficulty(difficulty) {
+    if (!Number.isInteger(difficulty) || difficulty < 1 || difficulty > 5) {
+      throw new RangeError("Difficulty must be an integer from 1 to 5.");
+    }
+    this.difficulty = difficulty;
+  }
+
+  setWaitingForDifficulty(isWaiting) {
+    this.isWaitingForDifficulty = isWaiting;
   }
 
   setUserInfo(userId, chatId, userName, first_name) {
@@ -37,8 +57,21 @@ class WordGame {
   }
 
   async getWord() {
-    const response = await fetch(this.URL);
-    return await response.json();
+    const URL = `https://random-word-api.herokuapp.com/word?length=${this.length}&diff=${this.difficulty}`;
+    const response = await fetch(URL);
+    if (!response.ok) {
+      throw new Error(`Word request failed: ${response.status}`);
+    }
+    const words = await response.json();
+    if (
+      !Array.isArray(words) ||
+      typeof words[0] !== "string" ||
+      !/^[a-z]+$/i.test(words[0]) ||
+      words[0].length !== this.length
+    ) {
+      throw new Error("No valid word returned for these settings.");
+    }
+    return words;
   }
 
   isGameWon() {
@@ -261,6 +294,10 @@ ${result}
     return `🏆 <b>ACHIEVEMENTS (${unlockedAchievements.length}/${ACHIEVEMENTS.length})</b>\n${details}`;
   }
 
+  /**
+   * Returns the start message for the game.
+   * @returns {string} The start message.
+   */
   getStartMessage() {
     return `
 🎮 <b>WORD GUESSING GAME</b>
@@ -286,81 +323,3 @@ ${this.getAchievementsSection()}
 `;
   }
 }
-
-const games = new Map();
-
-bot.command("start", async (ctx) => {
-  const chatId = ctx.message.chat.id;
-  const game = new WordGame(5);
-  game.setUserInfo(
-    ctx.message.from?.id,
-    chatId,
-    ctx.message.from?.username,
-    ctx.message.from?.first_name,
-  );
-  await game.reset();
-  games.set(chatId, game);
-
-  await ctx.reply(game.getStartMessage(), {
-    parse_mode: "HTML",
-  });
-});
-
-bot.on("message", async (ctx) => {
-  const chatId = ctx.message.chat.id;
-
-  const game = games.get(chatId);
-
-  if (!game) {
-    await ctx.reply("Please start a new game by sending /start.");
-    return;
-  }
-
-  const letter = ctx.message.text.toLowerCase();
-
-  if (!/^[a-z]+$/.test(letter) || letter.length > game.word.length) {
-    await ctx.reply("Please enter a letter, a word or a valid guess.");
-    return;
-  }
-
-  if (game.guessedLetters.has(letter)) {
-    await ctx.reply(
-      `You've already guessed the letter "${letter}". ${game.getDisplayedLetters()} (Tries: ${game.guessedTimes})`,
-    );
-    return;
-  }
-
-  const isCorrect = game.handleGuess(letter);
-
-  await ctx.reply(game.getGuessMessage(letter, isCorrect), {
-    parse_mode: "HTML",
-  });
-
-  if (game.isGameWon()) {
-    await ctx.reply(game.getWinMessage(), {
-      parse_mode: "HTML",
-    });
-
-    const unlockedAchievements = findUnlockedAchievements({
-      tries: game.guessedTimes,
-      word: game.word,
-    }).filter((achievement) =>
-      unlockAchievement(game.userId, achievement.id),
-    );
-    const achievementMessage = getAchievementMessage(unlockedAchievements);
-
-    if (achievementMessage) {
-      await ctx.reply(achievementMessage, {
-        parse_mode: "HTML",
-      });
-    }
-
-    await game.reset();
-
-    await ctx.reply(game.getStartMessage(), {
-      parse_mode: "HTML",
-    });
-  }
-});
-
-await run(bot);
