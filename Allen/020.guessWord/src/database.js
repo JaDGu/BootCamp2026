@@ -1,9 +1,13 @@
 import { DatabaseSync } from "node:sqlite";
 import { mkdirSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
-mkdirSync("./data", { recursive: true });
+const dataDir = new URL("../data/", import.meta.url);
+const dbPath = fileURLToPath(new URL("game.db", dataDir));
 
-const db = new DatabaseSync("./data/game.db");
+mkdirSync(dataDir, { recursive: true });
+
+const db = new DatabaseSync(dbPath);
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS achievements (
