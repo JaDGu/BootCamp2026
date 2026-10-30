@@ -8,42 +8,73 @@ const bot = new Bot(process.env.BOT_TOKEN);
 const games = new Map();   // 当前正在进行的局
 
 
+
 bot.command('start', async (ctx) => {
     const id = ctx.from.id;
     const name = ctx.from.first_name
     const thewords = await fetchRandomWord()
 
     games.set(id,
-        { answer: thewords, tries: 0, guessed: [getRandomLetter(thewords)] }
+        { answer: thewords, tries: 0, guessed: [getRandomLetter(thewords)], gameanswer: [] }
     );
+    games.get(id).gameanswer = games.get(id).answer.split('').filter((x) => x !== games.get(id).guessed[0])
+
     console.log('存进去的:', games.get(id));
     console.log(games)
 
     const text = maskWord(games.get(id).answer, games.get(id).guessed)
     console.log('text:', text);
 
-    ctx.reply('让我们愉快的猜单词吧！我已经想好了一个单词，你来猜吧');
-    ctx.reply(name + ": " + text + ` 猜了${games.get(id).tries}次`)
+    await ctx.reply('让我们愉快的猜单词吧！我已经想好了一个单词，你来猜吧');
+    await ctx.reply(name + ": " + text + ` 猜了${games.get(id).tries}次`)
 });
 
 bot.hears(/^[a-zA-Z]+$/, (ctx) => {
     const id = ctx.from.id
     const name = ctx.from.first_name
-    const text = ctx.message.text
+    const text = ctx.message.text.toLowerCase().trim()
     const game = games.get(id)
+    let shown
+
     if (games.has(id)) {
         if (text.length === 1) {
-            game.tries++
-            game.guessed.push(text)
+            if (game.guessed.includes(text)) {
+                shown = maskWord(games.get(id).answer, games.get(id).guessed)
+                ctx.reply(name + ": " + shown + ` 这个字母已经猜过了 已经猜过${game.tries}次`)
 
-            const shown = maskWord(games.get(id).answer, games.get(id).guessed)
-            ctx.reply(name + ": " + shown + ` 猜了${game.tries}次`)
-            console.log(name + ": " + "猜的:" + text + "   " + shown + ` 猜了${game.tries}次`)
+            } else {
+                if (game.answer.includes(text)) {
+                    game.tries++
+                    game.guessed.push(text)
+                    game.gameanswer = game.gameanswer.filter((x) => x !== text)
+                    // console.log(gameanswer)
+
+                    if (game.gameanswer.length === 0) {
+                        shown = maskWord(games.get(id).answer, games.get(id).guessed)
+                        ctx.reply(name + ": " + shown + ` 恭喜你,猜对了,一共用了${game.tries}次`)
+                        console.log(name + ": " + "猜的:" + text + "   " + shown + `恭喜你,猜对了,一共用了${game.tries}次`)
+                        games.delete(id)
+
+                    } else {
+
+
+                        shown = maskWord(games.get(id).answer, games.get(id).guessed)
+                        ctx.reply(name + ": " + shown + ` 这个字母对了,已经用了${game.tries}次`)
+                        console.log(name + ": " + "猜的:" + text + "   " + shown + `这个字母对了,已经用了${game.tries}次`)
+                    }
+                } else {
+                    game.tries++
+                    game.guessed.push(text)
+
+                    shown = maskWord(games.get(id).answer, games.get(id).guessed)
+                    ctx.reply(name + ": " + shown + ` 已经用了${game.tries}次`)
+                    console.log(name + ": " + "猜的:" + text + "   " + shown + ` 已经用了${game.tries}次`)
+                }
+            }
+
         } else return
 
-    } else {
-        return
-    }
+    } else return
 })
 
 
